@@ -1,5 +1,5 @@
-import { FaBtc } from 'react-icons/fa'
-import { Link } from 'react-router-dom'
+import { FaBtc } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export const Header = () => {
   return (
@@ -34,5 +34,5 @@ export const Header = () => {
         </Link>
       </div>
     </header>
-  )
-}
+  );
+};
