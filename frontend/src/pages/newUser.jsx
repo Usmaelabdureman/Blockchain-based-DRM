@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { BsPersonVideo3 } from 'react-icons/bs';
-import { FcReadingEbook } from 'react-icons/fc';
+import { BsPersonVideo3 } from "react-icons/bs";
+import { FcReadingEbook } from "react-icons/fc";
 import UserCard from "../components/newUserCard";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -16,25 +16,24 @@ export const NewUserScreen = () => {
         </h1>
       </div>
       <div className="flex justify-center items-center">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-        <UserCard
-          icon={<BsPersonVideo3 className="text-6xl mx-auto" />}
-          userType="Creator"
-          selectedUserType={userType}
-          setUserType={setUserType}
-          description="Create and share your books and other resources"
-        />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          <UserCard
+            icon={<BsPersonVideo3 className="text-6xl mx-auto" />}
+            userType="Creator"
+            selectedUserType={userType}
+            setUserType={setUserType}
+            description="Create and share your books and other resources"
+          />
 
-        <UserCard
-          icon={<FcReadingEbook className="text-6xl mx-auto" />}
-          userType="User"
-          selectedUserType={userType}
-          setUserType={setUserType}
-          description="Join as a User and explore the content and other resources"
-        />
+          <UserCard
+            icon={<FcReadingEbook className="text-6xl mx-auto" />}
+            userType="User"
+            selectedUserType={userType}
+            setUserType={setUserType}
+            description="Join as a User and explore the content and other resources"
+          />
+        </div>
       </div>
-      </div>
-      
 
       <div className="text-center mt-8">
         <button
@@ -47,7 +46,10 @@ export const NewUserScreen = () => {
         </button>
       </div>
       <p className="text-center mt-4">
-        Already have an account? <Link to="/signin" className="text-green-500 hover:underline">Sign in</Link>
+        Already have an account?{" "}
+        <Link to="/signin" className="text-green-500 hover:underline">
+          Sign in
+        </Link>
       </p>
     </div>
   );

@@ -1,43 +1,42 @@
-import { Card } from './Card'
+import { Card } from "./Card";
 
 const Home = () => {
- 
   const books = [
     {
-      title: 'The Great Gatsby',
-      description: 'A classic novel about the American Dream',
+      title: "The Great Gatsby",
+      description: "A classic novel about the American Dream",
       rate: 4.5,
     },
     {
-      title: 'To Kill a Mockingbird',
-      description: 'A powerful story about racial injustice',
+      title: "To Kill a Mockingbird",
+      description: "A powerful story about racial injustice",
       rate: 4.8,
     },
     {
-      title: 'Pride and Prejudice',
-      description: 'A timeless tale of love and societal expectations',
+      title: "Pride and Prejudice",
+      description: "A timeless tale of love and societal expectations",
       rate: 4.7,
     },
 
     {
-      title: 'The Lord of the Rings',
+      title: "The Lord of the Rings",
 
-      description: 'A powerful and epic fantasy novel',
+      description: "A powerful and epic fantasy novel",
       rate: 4.9,
     },
     {
-      title: '1984',
-      description: 'A dystopian novel about the dangers of totalitarianism',
+      title: "1984",
+      description: "A dystopian novel about the dangers of totalitarianism",
       rate: 4.6,
     },
     {
-      title: 'The Catcher in the Rye',
-      description: 'A coming-of-age novel about teenage angst',
+      title: "The Catcher in the Rye",
+      description: "A coming-of-age novel about teenage angst",
       rate: 4.2,
     },
-  ]
+  ];
 
-  const categories = ['Fiction', 'Non-Fiction', 'Mystery', 'Sci-Fi', 'Romance']
+  const categories = ["Fiction", "Non-Fiction", "Mystery", "Sci-Fi", "Romance"];
 
   return (
     <div className="p-4">
@@ -73,7 +72,7 @@ const Home = () => {
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
