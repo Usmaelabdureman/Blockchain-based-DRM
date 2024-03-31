@@ -2,7 +2,7 @@ import Home from './components/Home'
 import { Signin } from './pages/Login'
 import { Register } from './pages/Register'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { NewUserScreen } from './components/newUser'
+import { NewUserScreen } from './pages/newUser'
 import { Header } from './components/Header'
 import { Profile } from './components/userProfile'
 

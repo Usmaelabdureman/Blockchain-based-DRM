@@ -1,8 +1,7 @@
 import { Card } from './Card'
-const Home = () => {
-  // Sample book data
 
-  // Sample book data
+const Home = () => {
+ 
   const books = [
     {
       title: 'The Great Gatsby',

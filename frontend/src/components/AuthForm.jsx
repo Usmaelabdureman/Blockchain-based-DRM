@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useState } from 'react'
 import { FaFacebook } from 'react-icons/fa'
 import { FcGoogle } from 'react-icons/fc'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate ,useLocation} from 'react-router-dom'
 import { useLoginMutation, useSignupMutation } from '../services/authApi'
-import { useAppDispatch } from '../Hooks/hooks'
-import { setUser } from '../services/authSlice'
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'
 import PropTypes from 'prop-types';
+import Alert from './Alert'
+
+
 
 const signinContent = {
-  linkUrl: '/register',
+  linkUrl: '/',
   linkText: "Don't have an account?",
   header: 'Welcome Back',
   subheader: 'Enter your credentials to access your account',
@@ -28,7 +29,7 @@ const registerContent = {
 }
 
 const initialFormState = {
-  userType: 'creator',
+  userType: '',
   username: '',
   firstName: '',
   lastName: '',
@@ -38,147 +39,148 @@ const initialFormState = {
   passwordVisible: false,
 }
 
-AuthForm.propTypes = {
-  mode: PropTypes.string.isRequired,
-};
 
+/**
+ * AuthForm component handles the authentication form for user login and registration.
+ * 
+ * @component
+ * @param {Object} props - The component props.
+ * @param {string} props.mode - The mode of the form, either 'register' or 'login'.
+ * @returns {JSX.Element} The rendered AuthForm component.
+ */
 const AuthForm = ({ mode }) => {
-  const [formState, setFormState] = useState({ ...initialFormState })
-  const [error, setError] = useState('')
+  const [formState, setFormState] = useState({ ...initialFormState });
+  const [errors, setErrors] = useState({});
+  const [alert, setAlert] = useState({ message: '', type: '' }); 
+  const location = useLocation();
+
+const searchParams = new URLSearchParams(location.search);
+const userTypeFromUrl = searchParams.get('role')   
+useEffect(() => {
+  setFormState((prevState) => ({
+    ...prevState,
+    userType: userTypeFromUrl,
+  }));
+}, [userTypeFromUrl]);
+
   const [
     login,
-    { data: loginData, isSuccess: isLoginSuccess, isError: LoginError },
-  ] = useLoginMutation()
-  const [signup, { data: registerData }] = useSignupMutation()
+    {  isSuccess: isLoginSuccess, isErrors: LoginErrors },
+  ] = useLoginMutation();
+  const [signup, { data: registerData }] = useSignupMutation();
 
-  const navigate = useNavigate()
-  const dispatch = useAppDispatch()
+  
+  const navigate = useNavigate();
+ 
 
   const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault();
-  
+      setErrors({}); // Clear previous errors
+
       const validateInput = () => {
+        let newErrors = {};
+
+       
         if (formState.username === '') {
-          setError('Username is required')
-          return false
+          newErrors.username = 'Username is required';
         } else if (formState.username.length < 4) {
-          setError('Username must be at least 4 characters')
-          return false
+          newErrors.username = 'Username must be at least 4 characters';
         }
-        if (formState.password === '' || formState.password.length < 6) {
-          setError('Password is required and must be at least 6 characters')
-          return false
-        }
-        const passwordRegex =
-          /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/
-        if (!passwordRegex.test(formState.password)) {
-          setError(
-            'Password must contain at least one letter, one number, and one special character',
-          )
-          return false
-        }
-    
         if (mode === 'register') {
           if (formState.firstName === '') {
-            setError('First Name is required')
-            return false
-          } else if (formState.firstName.length < 4) {
-            setError('First Name must be at least 4 characters')
-            return false
+            newErrors.firstName = 'First Name is required';
           }
           if (formState.lastName === '') {
-            setError('Last Name is required')
-            return false
+            newErrors.lastName = 'Last Name is required';
           }
           if (formState.email === '') {
-            setError('Email is required')
-            return false
-          }
-          const validEmail = /\S+@\S+\.\S+/
-    
-          if (!validEmail.test(formState.email)) {
-            setError('Please enter a valid email')
-            return false
+            newErrors.email = 'Email is required';
+          } else if (!formState.email.includes('@')) {
+            newErrors.email = 'Invalid email';
           }
         }
-      }
-  
-      
+        if (formState.password === '') {
+          newErrors.password = 'Password is required';
+        } else if (formState.password.length < 6) {
+          newErrors.password = 'Password must be at least 6 characters';
+        }
+
+        const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/;
+        if (!passwordRegex.test(formState.password)) {
+          newErrors.password = 'Password must contain at least one letter, one number, and one special character';
+        }
+
+        setErrors(newErrors);
+
+        return Object.keys(newErrors).length === 0;
+      };
+
       if (!validateInput()) {
-        
-        return
+        return;
       }
-  
+
       try {
         if (mode === 'register') {
           if (formState.password !== formState.confirmPassword) {
-            setError('Passwords do not match');
+            setErrors((prevErrors) => ({
+              ...prevErrors,
+              confirmPassword: 'Passwords do not match',
+            }));
             return;
           }
-  
-          signup(formState);
+
+            await signup(formState).unwrap();
+            setAlert({ message: 'Registration successful!', type: 'success' });
+            // after showing the alert, navigate to the login page after 2 seconds
+            setTimeout(() => {
+            navigate('/signin');
+            }, 3000);
         } else {
-          login(formState);
+          await login(formState).unwrap();
+          setAlert({ message: 'Login successful!', type: 'success' });
+          
+          setTimeout(() => {
+            navigate('/profile');
+          }
+          , 3000);
         }
       } catch (e) {
-        setError(`Could not ${mode}`);
-      } finally {
-        setFormState({ ...initialFormState });
+        setAlert({ message: `Could not ${mode}. Please try again later.`, type: 'errors' });
       }
     },
-    [formState, mode, login, signup]
+    [formState, mode, login, signup, navigate]
   );
-  
- 
+
   useEffect(() => {
     if (isLoginSuccess) {
-      navigate('/profile')
+      navigate('/profile');
     }
-    dispatch(
-      setUser({
-        username: loginData?.username,
-        token: loginData?.token,
-      }),
-    )
 
-    if (LoginError) {
-      setError('Invalid Credentials')
+    if (LoginErrors) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        general: 'Invalid Credentials',
+      }));
     }
 
     if (registerData) {
-      navigate('/signin')
+      navigate('/signin');
     }
-  }, [isLoginSuccess, navigate, LoginError, dispatch, loginData?.token, loginData?.username, registerData])
+  }, [isLoginSuccess, navigate, LoginErrors, registerData]);
 
-  const content = mode === 'register' ? registerContent : signinContent
+  const content = mode === 'register' ? registerContent : signinContent;
+
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
+      
       <h2 className="text-2xl font-semibold mb-4 text-center">
         {content.header}
       </h2>
+      {alert.message && <Alert message={alert.message} type={alert.type} />}
       <p className="text-gray-600 mb-4 text-center">{content.subheader}</p>
-      <h1>Continue With</h1>
-      <div className="grid grid-cols-2 gap-8">
-        <button className="flex items-center   rounded " onClick={() => {}}>
-          <FcGoogle className="mr-2" />
-          Google
-        </button>
-
-        <button className="flex items-center  rounded " onClick={() => {}}>
-          <FaFacebook className="mr-2" />
-          Facebook
-        </button>
-      </div>
-
-      <div className="flex items-center mt-4">
-        <div className="border-t border-gray-300 w-full"></div>
-        <span className="px-3 text-gray-500">Or</span>
-        <div className="border-t border-gray-300 w-full"></div>
-      </div>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4 mt-4">
         {mode === 'register' && (
           <>
             <div className="grid grid-cols-2 gap-4">
@@ -188,7 +190,6 @@ const AuthForm = ({ mode }) => {
                   type="text"
                   className="mt-1 p-2 w-full border rounded"
                   value={formState.firstName}
-                  required
                   onChange={(e) =>
                     setFormState((prevState) => ({
                       ...prevState,
@@ -196,9 +197,11 @@ const AuthForm = ({ mode }) => {
                     }))
                   }
                 />
-                {error && error.includes('First Name') && (
-                  <p className="text-red-500 mt-2">{error}</p>
-                )}
+                {
+                  errors.firstName && (
+                    <p className="text-red-500 mt-2">{errors.firstName}</p>
+                  )
+                }
               </div>
 
               <div className="mb-4">
@@ -214,8 +217,8 @@ const AuthForm = ({ mode }) => {
                     }))
                   }
                 />
-                {error && error.includes('Last Name') && (
-                  <p className="text-red-500 mt-2">{error}</p>
+                {errors.lastName && (
+                  <p className="text-red-500 mt-2">{errors.lastName}</p>
                 )}
               </div>
             </div>
@@ -232,8 +235,8 @@ const AuthForm = ({ mode }) => {
                   }))
                 }
               />
-              {error && error.includes('Email') && (
-                <p className="text-red-500 mt-2">{error}</p>
+              {errors.email && (
+                <p className="text-red-500 mt-2">{errors.email}</p>
               )}
             </div>
           </>
@@ -252,8 +255,8 @@ const AuthForm = ({ mode }) => {
               }))
             }
           />
-          {error && error.includes('Username') && (
-            <p className="text-red-500 mt-2">{error}</p>
+          {errors.username && (
+            <p className="text-red-500 mt-2">{errors.username}</p>
           )}
         </div>
 
@@ -264,6 +267,7 @@ const AuthForm = ({ mode }) => {
               type={formState.passwordVisible ? 'text' : 'password'}
               className="mt-1 p-2 w-full border rounded"
               value={formState.password}
+              autoComplete='off'
               onChange={(e) =>
                 setFormState((prevState) => ({
                   ...prevState,
@@ -288,8 +292,8 @@ const AuthForm = ({ mode }) => {
               )}
             </div>
           </div>
-          {error && error.includes('Password') && (
-            <p className="text-red-500 mt-2">{error}</p>
+          {errors.password && (
+            <p className="text-red-500 mt-2">{errors.password}</p>
           )}
         </div>
 
@@ -302,6 +306,7 @@ const AuthForm = ({ mode }) => {
                   type={formState.passwordVisible ? 'text' : 'password'}
                   className="mt-1 p-2 w-full border rounded"
                   value={formState.confirmPassword}
+                  autoComplete='off'
                   onChange={(e) =>
                     setFormState((prevState) => ({
                       ...prevState,
@@ -324,8 +329,8 @@ const AuthForm = ({ mode }) => {
                     <AiFillEyeInvisible className="text-gray-500" />
                   )}
                 </div>
-                {error && error.includes('Passwords do not match') && (
-                  <p className="text-red-500 mt-2">{error}</p>
+                {errors.confirmPassword && (
+                  <p className="text-red-500 mt-2">{errors.confirmPassword}</p>
                 )}
               </div>
             </div>
@@ -349,6 +354,7 @@ const AuthForm = ({ mode }) => {
           {content.buttonText}
         </button>
       </form>
+      {errors.general && <p className="text-red-500 mt-2 text-center">{errors.general}</p>}
       {mode === 'signin' && (
         <div className="flex justify-end">
           <Link
@@ -359,6 +365,23 @@ const AuthForm = ({ mode }) => {
           </Link>
         </div>
       )}
+      <div className="flex items-center mt-6">
+        <div className="border-t border-gray-300 w-full"></div>
+        <span className="px-3 text-gray-500">Or</span>
+        <div className="border-t border-gray-300 w-full"></div>
+      </div>
+      <h1 className='mt-5'>Continue With</h1>
+
+      <div className="grid grid-cols-2 gap-8 mt-2">
+        <button className="flex hover:border items-center border-gray-300 rounded" onClick={() => {}}>
+          <FcGoogle className="mr-2" />
+          Google
+        </button>
+        <button className="flex items-center hover:border border-gray-300 rounded" onClick={() => {}}>
+          <FaFacebook className="mr-2 ml-3" />
+          Facebook
+        </button>
+      </div>
       <p className="mt-4 text-gray-700 text-center">
         {content.linkText}{' '}
         <Link to={content.linkUrl} className="text-blue-500 hover:underline">
@@ -370,3 +393,8 @@ const AuthForm = ({ mode }) => {
 }
 
 export default AuthForm
+
+AuthForm.propTypes = {
+  mode: PropTypes.string.isRequired,
+  
+};
