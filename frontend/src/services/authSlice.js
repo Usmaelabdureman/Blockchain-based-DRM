@@ -13,10 +13,13 @@ export const authSlice = createSlice({
       state.username = action.payload.username;
       state.token = action.payload.token;
 
-      localStorage.setItem("user", JSON.stringify({
-        username: action.payload.username,
-        token: action.payload.token
-      }));
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          username: action.payload.username,
+          token: action.payload.token,
+        }),
+      );
     },
   },
 });

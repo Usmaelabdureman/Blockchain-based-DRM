@@ -1,122 +1,120 @@
-import { useCallback, useEffect, useState } from 'react'
-import { FaFacebook } from 'react-icons/fa'
-import { FcGoogle } from 'react-icons/fc'
-import { Link, useNavigate } from 'react-router-dom'
-import { useLoginMutation, useSignupMutation } from '../services/authApi'
-import { useAppDispatch } from '../Hooks/hooks'
-import { setUser } from '../services/authSlice'
-import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'
-import PropTypes from 'prop-types';
+import { useCallback, useEffect, useState } from "react";
+import { FaFacebook } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
+import { Link, useNavigate } from "react-router-dom";
+import { useLoginMutation, useSignupMutation } from "../services/authApi";
+import { useAppDispatch } from "../Hooks/hooks";
+import { setUser } from "../services/authSlice";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import PropTypes from "prop-types";
 
 const signinContent = {
-  linkUrl: '/register',
+  linkUrl: "/register",
   linkText: "Don't have an account?",
-  header: 'Welcome Back',
-  subheader: 'Enter your credentials to access your account',
-  buttonText: 'Sign In',
-  forgotPassword: 'Forgot Password?',
-  redirect: 'Register',
-}
+  header: "Welcome Back",
+  subheader: "Enter your credentials to access your account",
+  buttonText: "Sign In",
+  forgotPassword: "Forgot Password?",
+  redirect: "Register",
+};
 
 const registerContent = {
-  linkUrl: '/signin',
-  linkText: 'Already have an account?',
-  header: 'Create an account',
-  subheader: 'Enter your details to create an account',
-  buttonText: 'Register',
-  redirect: 'Sign In',
-}
+  linkUrl: "/signin",
+  linkText: "Already have an account?",
+  header: "Create an account",
+  subheader: "Enter your details to create an account",
+  buttonText: "Register",
+  redirect: "Sign In",
+};
 
 const initialFormState = {
-  userType: 'creator',
-  username: '',
-  firstName: '',
-  lastName: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
+  userType: "creator",
+  username: "",
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
   passwordVisible: false,
-}
+};
 
 AuthForm.propTypes = {
   mode: PropTypes.string.isRequired,
 };
 
 const AuthForm = ({ mode }) => {
-  const [formState, setFormState] = useState({ ...initialFormState })
-  const [error, setError] = useState('')
+  const [formState, setFormState] = useState({ ...initialFormState });
+  const [error, setError] = useState("");
   const [
     login,
     { data: loginData, isSuccess: isLoginSuccess, isError: LoginError },
-  ] = useLoginMutation()
-  const [signup, { data: registerData }] = useSignupMutation()
+  ] = useLoginMutation();
+  const [signup, { data: registerData }] = useSignupMutation();
 
-  const navigate = useNavigate()
-  const dispatch = useAppDispatch()
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault();
-  
+
       const validateInput = () => {
-        if (formState.username === '') {
-          setError('Username is required')
-          return false
+        if (formState.username === "") {
+          setError("Username is required");
+          return false;
         } else if (formState.username.length < 4) {
-          setError('Username must be at least 4 characters')
-          return false
+          setError("Username must be at least 4 characters");
+          return false;
         }
-        if (formState.password === '' || formState.password.length < 6) {
-          setError('Password is required and must be at least 6 characters')
-          return false
+        if (formState.password === "" || formState.password.length < 6) {
+          setError("Password is required and must be at least 6 characters");
+          return false;
         }
         const passwordRegex =
-          /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/
+          /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/;
         if (!passwordRegex.test(formState.password)) {
           setError(
-            'Password must contain at least one letter, one number, and one special character',
-          )
-          return false
+            "Password must contain at least one letter, one number, and one special character",
+          );
+          return false;
         }
-    
-        if (mode === 'register') {
-          if (formState.firstName === '') {
-            setError('First Name is required')
-            return false
+
+        if (mode === "register") {
+          if (formState.firstName === "") {
+            setError("First Name is required");
+            return false;
           } else if (formState.firstName.length < 4) {
-            setError('First Name must be at least 4 characters')
-            return false
+            setError("First Name must be at least 4 characters");
+            return false;
           }
-          if (formState.lastName === '') {
-            setError('Last Name is required')
-            return false
+          if (formState.lastName === "") {
+            setError("Last Name is required");
+            return false;
           }
-          if (formState.email === '') {
-            setError('Email is required')
-            return false
+          if (formState.email === "") {
+            setError("Email is required");
+            return false;
           }
-          const validEmail = /\S+@\S+\.\S+/
-    
+          const validEmail = /\S+@\S+\.\S+/;
+
           if (!validEmail.test(formState.email)) {
-            setError('Please enter a valid email')
-            return false
+            setError("Please enter a valid email");
+            return false;
           }
         }
-      }
-  
-      
+      };
+
       if (!validateInput()) {
-        
-        return
+        return;
       }
-  
+
       try {
-        if (mode === 'register') {
+        if (mode === "register") {
           if (formState.password !== formState.confirmPassword) {
-            setError('Passwords do not match');
+            setError("Passwords do not match");
             return;
           }
-  
+
           signup(formState);
         } else {
           login(formState);
@@ -127,31 +125,38 @@ const AuthForm = ({ mode }) => {
         setFormState({ ...initialFormState });
       }
     },
-    [formState, mode, login, signup]
+    [formState, mode, login, signup],
   );
-  
- 
+
   useEffect(() => {
     if (isLoginSuccess) {
-      navigate('/profile')
+      navigate("/profile");
     }
     dispatch(
       setUser({
         username: loginData?.username,
         token: loginData?.token,
       }),
-    )
+    );
 
     if (LoginError) {
-      setError('Invalid Credentials')
+      setError("Invalid Credentials");
     }
 
     if (registerData) {
-      navigate('/signin')
+      navigate("/signin");
     }
-  }, [isLoginSuccess, navigate, LoginError, dispatch, loginData?.token, loginData?.username, registerData])
+  }, [
+    isLoginSuccess,
+    navigate,
+    LoginError,
+    dispatch,
+    loginData?.token,
+    loginData?.username,
+    registerData,
+  ]);
 
-  const content = mode === 'register' ? registerContent : signinContent
+  const content = mode === "register" ? registerContent : signinContent;
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
@@ -179,7 +184,7 @@ const AuthForm = ({ mode }) => {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {mode === 'register' && (
+        {mode === "register" && (
           <>
             <div className="grid grid-cols-2 gap-4">
               <div className="mb-4">
@@ -196,7 +201,7 @@ const AuthForm = ({ mode }) => {
                     }))
                   }
                 />
-                {error && error.includes('First Name') && (
+                {error && error.includes("First Name") && (
                   <p className="text-red-500 mt-2">{error}</p>
                 )}
               </div>
@@ -214,7 +219,7 @@ const AuthForm = ({ mode }) => {
                     }))
                   }
                 />
-                {error && error.includes('Last Name') && (
+                {error && error.includes("Last Name") && (
                   <p className="text-red-500 mt-2">{error}</p>
                 )}
               </div>
@@ -232,7 +237,7 @@ const AuthForm = ({ mode }) => {
                   }))
                 }
               />
-              {error && error.includes('Email') && (
+              {error && error.includes("Email") && (
                 <p className="text-red-500 mt-2">{error}</p>
               )}
             </div>
@@ -252,7 +257,7 @@ const AuthForm = ({ mode }) => {
               }))
             }
           />
-          {error && error.includes('Username') && (
+          {error && error.includes("Username") && (
             <p className="text-red-500 mt-2">{error}</p>
           )}
         </div>
@@ -261,7 +266,7 @@ const AuthForm = ({ mode }) => {
           <label className="block text-gray-700">Password</label>
           <div className="relative">
             <input
-              type={formState.passwordVisible ? 'text' : 'password'}
+              type={formState.passwordVisible ? "text" : "password"}
               className="mt-1 p-2 w-full border rounded"
               value={formState.password}
               onChange={(e) =>
@@ -288,18 +293,18 @@ const AuthForm = ({ mode }) => {
               )}
             </div>
           </div>
-          {error && error.includes('Password') && (
+          {error && error.includes("Password") && (
             <p className="text-red-500 mt-2">{error}</p>
           )}
         </div>
 
-        {mode === 'register' && (
+        {mode === "register" && (
           <div>
             <div className="mb-4">
               <label className="block text-gray-700">Confirm Password</label>
               <div className="relative">
                 <input
-                  type={formState.passwordVisible ? 'text' : 'password'}
+                  type={formState.passwordVisible ? "text" : "password"}
                   className="mt-1 p-2 w-full border rounded"
                   value={formState.confirmPassword}
                   onChange={(e) =>
@@ -324,7 +329,7 @@ const AuthForm = ({ mode }) => {
                     <AiFillEyeInvisible className="text-gray-500" />
                   )}
                 </div>
-                {error && error.includes('Passwords do not match') && (
+                {error && error.includes("Passwords do not match") && (
                   <p className="text-red-500 mt-2">{error}</p>
                 )}
               </div>
@@ -349,7 +354,7 @@ const AuthForm = ({ mode }) => {
           {content.buttonText}
         </button>
       </form>
-      {mode === 'signin' && (
+      {mode === "signin" && (
         <div className="flex justify-end">
           <Link
             to="/reset-password"
@@ -360,13 +365,13 @@ const AuthForm = ({ mode }) => {
         </div>
       )}
       <p className="mt-4 text-gray-700 text-center">
-        {content.linkText}{' '}
+        {content.linkText}{" "}
         <Link to={content.linkUrl} className="text-blue-500 hover:underline">
           {content.redirect}
         </Link>
       </p>
     </div>
-  )
-}
+  );
+};
 
-export default AuthForm
+export default AuthForm;

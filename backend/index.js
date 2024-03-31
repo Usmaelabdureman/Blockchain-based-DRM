@@ -1,12 +1,12 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const passport = require('passport');
-const session = require('express-session');
-const dotenv = require('dotenv');
-const authRoutes = require('./routes/authRoute');
-const errorHandler = require('./utils/errorHandler');
-const config = require('./config/config');
-const cors = require('cors');
+const express = require("express");
+const mongoose = require("mongoose");
+const passport = require("passport");
+const session = require("express-session");
+const dotenv = require("dotenv");
+const authRoutes = require("./routes/authRoute");
+const errorHandler = require("./utils/errorHandler");
+const config = require("./config/config");
+const cors = require("cors");
 dotenv.config();
 const app = express();
 // cors
@@ -23,19 +23,18 @@ app.use(express.json());
 // app.use(passport.session());
 
 // Routes
-app.use('/auth', authRoutes);
+app.use("/auth", authRoutes);
 
 // Error handler
 app.use(errorHandler);
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI, {
-
-})
+mongoose
+  .connect(process.env.MONGODB_URI, {})
   .then(() => {
-    console.log('Connected to MongoDB');
+    console.log("Connected to MongoDB");
     app.listen(process.env.PORT || 5000, () => {
-      console.log('Server is running');
+      console.log("Server is running");
     });
   })
-  .catch(err => console.error('Error connecting to MongoDB:', err.message));
+  .catch((err) => console.error("Error connecting to MongoDB:", err.message));

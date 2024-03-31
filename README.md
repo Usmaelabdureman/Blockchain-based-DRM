@@ -1,10 +1,11 @@
-# Blockchain based Digital Rights Management 
+# Blockchain based Digital Rights Management
 
 ## Introduction
 
-This project is a blockchain based digital rights management system. The system is designed to provide a secure and transparent way to manage digital rights. The system is designed to be used by artists, musicians, writers, and other content creators to manage their digital rights. The system is designed to be secure, transparent, and easy to use. 
+This project is a blockchain based digital rights management system. The system is designed to provide a secure and transparent way to manage digital rights. The system is designed to be used by artists, musicians, writers, and other content creators to manage their digital rights. The system is designed to be secure, transparent, and easy to use.
 
 ## Features
+
 The system has the following features:
 
 - Secure: The system is designed to be secure. The system uses blockchain technology to provide a secure and tamper-proof way to manage digital rights. The system uses cryptographic techniques to ensure that digital rights are protected.
@@ -18,6 +19,7 @@ The system has the following features:
 The system uses blockchain technology to provide a secure and transparent way to manage digital rights. The system uses a public ledger to record all digital rights transactions. The system uses cryptographic techniques to ensure that digital rights are protected. The system provides a user-friendly interface that allows content creators to manage their digital rights. The system provides tools for content creators to register their digital rights, track their digital rights, and manage their digital rights.
 
 ## Technologies
+
 The system uses the following technologies:
 
 - Ethereum blockchain and smart contracts for secure and transparent digital rights management.
@@ -38,7 +40,7 @@ To install the system, follow these steps:
 1. Clone the repository:
 
 ```bash
-git clone 
+git clone
 ```
 
 2. Install the dependencies:

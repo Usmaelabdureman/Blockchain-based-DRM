@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState } from "react";
 
 export const NewUserScreen = () => {
-  const [userType, setUserType] = useState('Creator')
+  const [userType, setUserType] = useState("Creator");
 
   return (
     <div className="container mx-auto p-4">
@@ -23,8 +23,8 @@ export const NewUserScreen = () => {
                       <input
                         type="radio"
                         value="Creator"
-                        checked={userType === 'Creator'}
-                        onChange={() => setUserType('Creator')}
+                        checked={userType === "Creator"}
+                        onChange={() => setUserType("Creator")}
                       />
                     </label>
                   </div>
@@ -45,8 +45,8 @@ export const NewUserScreen = () => {
                       <input
                         type="radio"
                         value="User"
-                        checked={userType === 'User'}
-                        onChange={() => setUserType('User')}
+                        checked={userType === "User"}
+                        onChange={() => setUserType("User")}
                       />
                     </label>
                   </div>
@@ -64,12 +64,12 @@ export const NewUserScreen = () => {
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           onClick={() => {
-            window.location.href = `/register?role=${userType}`
+            window.location.href = `/register?role=${userType}`;
           }}
         >
           Create Account
         </button>
       </div>
     </div>
-  )
-}
+  );
+};

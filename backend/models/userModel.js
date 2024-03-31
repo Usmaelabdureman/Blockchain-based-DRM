@@ -11,7 +11,6 @@ const userSchema = new mongoose.Schema(
     firstName: {
       type: String,
       required: true,
-
     },
 
     lastName: {
@@ -31,16 +30,15 @@ const userSchema = new mongoose.Schema(
 
     userType: {
       type: String,
-    //   enum: ["creator", "consumer"],
-    //   // required: true,
+      //   enum: ["creator", "consumer"],
+      //   // required: true,
     },
     // google id
-    googleId : {type : String},
-    facebookId : {type : String},
+    googleId: { type: String },
+    facebookId: { type: String },
   },
   {
     timestamps: true,
-
-  }
+  },
 );
 module.exports = mongoose.model("User", userSchema);
