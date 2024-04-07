@@ -1,12 +1,7 @@
-import { FaThumbsDown, FaThumbsUp } from 'react-icons/fa'
-import PropTypes from 'prop-types';
+import { FaThumbsDown, FaThumbsUp } from "react-icons/fa";
+import PropTypes from "prop-types";
 
-
-export const Card = ({
-  title,
-  desc,
-  rate,
-}) => {
+export const Card = ({ title, desc, rate }) => {
   return (
     <div className="bg-white rounded-lg shadow-md p-4">
       <img
@@ -38,9 +33,8 @@ export const Card = ({
         {/* <span className="bg-gray-200 text-gray-700 px-2 py-1 rounded-md text-sm mr-2 mb-2">Tag 3</span> */}
       </div>
     </div>
-  )
-}
-
+  );
+};
 
 Card.propTypes = {
   title: PropTypes.string.isRequired,

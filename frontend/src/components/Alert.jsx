@@ -1,31 +1,24 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 const Alert = ({ message, type }) => {
+  const alertStyle = (type) => {
+    switch (type) {
+      case "success":
+        return "alert-success";
+      case "error":
+        return "alert-error";
+      case "info":
+      default:
+        return "alert-info";
+    }
+  };
 
-        const alertStyle = (type) => {
+  return <div className={`alert ${alertStyle(type)}`}>{message}</div>;
+};
 
-            switch (type) {
-                case 'success':
-                    return 'alert-success';
-                case 'error':
-                    return 'alert-error';
-                case 'info':
-                default:
-                    return 'alert-info';
-            }
-        };
-    
-        return (
-            <div className={`alert ${alertStyle(type)}`}>
-                {message}
-            </div>
-        );
-    };
-    
-    export default Alert;
+export default Alert;
 
-    Alert.propTypes = {
-        message: PropTypes.string.isRequired,
-        type: PropTypes.string.isRequired
-    };
-    
+Alert.propTypes = {
+  message: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+};

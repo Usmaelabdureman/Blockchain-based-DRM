@@ -3,20 +3,20 @@
 @tailwind utilities;
 
 .alert {
-    padding: 15px;
-    border-radius: 4px;
-    color: white;
-    margin-bottom: 20px;
-  }
-  
-  .alert-info {
-    background-color: #007bff;
-  }
-  
-  .alert-success {
-    background-color: #28a745;
-  }
-  
-  .alert-error {
-    background-color: #dc3545;
-  }
+  padding: 15px;
+  border-radius: 4px;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.alert-info {
+  background-color: #007bff;
+}
+
+.alert-success {
+  background-color: #28a745;
+}
+
+.alert-error {
+  background-color: #dc3545;
+}

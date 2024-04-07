@@ -1,48 +1,45 @@
-import { useCallback, useEffect, useState } from 'react'
-import { FaFacebook } from 'react-icons/fa'
-import { FcGoogle } from 'react-icons/fc'
-import { Link, useNavigate ,useLocation} from 'react-router-dom'
-import { useLoginMutation, useSignupMutation } from '../services/authApi'
-import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'
-import PropTypes from 'prop-types';
-import Alert from './Alert'
-
-
+import { useCallback, useEffect, useState } from "react";
+import { FaFacebook } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useLoginMutation, useSignupMutation } from "../services/authApi";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import PropTypes from "prop-types";
+import Alert from "./Alert";
 
 const signinContent = {
-  linkUrl: '/',
+  linkUrl: "/",
   linkText: "Don't have an account?",
-  header: 'Welcome Back',
-  subheader: 'Enter your credentials to access your account',
-  buttonText: 'Sign In',
-  forgotPassword: 'Forgot Password?',
-  redirect: 'Register',
-}
+  header: "Welcome Back",
+  subheader: "Enter your credentials to access your account",
+  buttonText: "Sign In",
+  forgotPassword: "Forgot Password?",
+  redirect: "Register",
+};
 
 const registerContent = {
-  linkUrl: '/signin',
-  linkText: 'Already have an account?',
-  header: 'Create an account',
-  subheader: 'Enter your details to create an account',
-  buttonText: 'Register',
-  redirect: 'Sign In',
-}
+  linkUrl: "/signin",
+  linkText: "Already have an account?",
+  header: "Create an account",
+  subheader: "Enter your details to create an account",
+  buttonText: "Register",
+  redirect: "Sign In",
+};
 
 const initialFormState = {
-  userType: '',
-  username: '',
-  firstName: '',
-  lastName: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
+  userType: "",
+  username: "",
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
   passwordVisible: false,
-}
-
+};
 
 /**
  * AuthForm component handles the authentication form for user login and registration.
- * 
+ *
  * @component
  * @param {Object} props - The component props.
  * @param {string} props.mode - The mode of the form, either 'register' or 'login'.
@@ -51,27 +48,23 @@ const initialFormState = {
 const AuthForm = ({ mode }) => {
   const [formState, setFormState] = useState({ ...initialFormState });
   const [errors, setErrors] = useState({});
-  const [alert, setAlert] = useState({ message: '', type: '' }); 
+  const [alert, setAlert] = useState({ message: "", type: "" });
   const location = useLocation();
 
-const searchParams = new URLSearchParams(location.search);
-const userTypeFromUrl = searchParams.get('role')   
-useEffect(() => {
-  setFormState((prevState) => ({
-    ...prevState,
-    userType: userTypeFromUrl,
-  }));
-}, [userTypeFromUrl]);
+  const searchParams = new URLSearchParams(location.search);
+  const userTypeFromUrl = searchParams.get("role");
+  useEffect(() => {
+    setFormState((prevState) => ({
+      ...prevState,
+      userType: userTypeFromUrl,
+    }));
+  }, [userTypeFromUrl]);
 
-  const [
-    login,
-    {  isSuccess: isLoginSuccess, isErrors: LoginErrors },
-  ] = useLoginMutation();
+  const [login, { isSuccess: isLoginSuccess, isErrors: LoginErrors }] =
+    useLoginMutation();
   const [signup, { data: registerData }] = useSignupMutation();
 
-  
   const navigate = useNavigate();
- 
 
   const handleSubmit = useCallback(
     async (e) => {
@@ -81,34 +74,35 @@ useEffect(() => {
       const validateInput = () => {
         let newErrors = {};
 
-       
-        if (formState.username === '') {
-          newErrors.username = 'Username is required';
+        if (formState.username === "") {
+          newErrors.username = "Username is required";
         } else if (formState.username.length < 4) {
-          newErrors.username = 'Username must be at least 4 characters';
+          newErrors.username = "Username must be at least 4 characters";
         }
-        if (mode === 'register') {
-          if (formState.firstName === '') {
-            newErrors.firstName = 'First Name is required';
+        if (mode === "register") {
+          if (formState.firstName === "") {
+            newErrors.firstName = "First Name is required";
           }
-          if (formState.lastName === '') {
-            newErrors.lastName = 'Last Name is required';
+          if (formState.lastName === "") {
+            newErrors.lastName = "Last Name is required";
           }
-          if (formState.email === '') {
-            newErrors.email = 'Email is required';
-          } else if (!formState.email.includes('@')) {
-            newErrors.email = 'Invalid email';
+          if (formState.email === "") {
+            newErrors.email = "Email is required";
+          } else if (!formState.email.includes("@")) {
+            newErrors.email = "Invalid email";
           }
         }
-        if (formState.password === '') {
-          newErrors.password = 'Password is required';
+        if (formState.password === "") {
+          newErrors.password = "Password is required";
         } else if (formState.password.length < 6) {
-          newErrors.password = 'Password must be at least 6 characters';
+          newErrors.password = "Password must be at least 6 characters";
         }
 
-        const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/;
+        const passwordRegex =
+          /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/;
         if (!passwordRegex.test(formState.password)) {
-          newErrors.password = 'Password must contain at least one letter, one number, and one special character';
+          newErrors.password =
+            "Password must contain at least one letter, one number, and one special character";
         }
 
         setErrors(newErrors);
@@ -121,67 +115,67 @@ useEffect(() => {
       }
 
       try {
-        if (mode === 'register') {
+        if (mode === "register") {
           if (formState.password !== formState.confirmPassword) {
             setErrors((prevErrors) => ({
               ...prevErrors,
-              confirmPassword: 'Passwords do not match',
+              confirmPassword: "Passwords do not match",
             }));
             return;
           }
 
-            await signup(formState).unwrap();
-            setAlert({ message: 'Registration successful!', type: 'success' });
-            // after showing the alert, navigate to the login page after 2 seconds
-            setTimeout(() => {
-            navigate('/signin');
-            }, 3000);
+          await signup(formState).unwrap();
+          setAlert({ message: "Registration successful!", type: "success" });
+          // after showing the alert, navigate to the login page after 2 seconds
+          setTimeout(() => {
+            navigate("/signin");
+          }, 3000);
         } else {
           await login(formState).unwrap();
-          setAlert({ message: 'Login successful!', type: 'success' });
-          
+          setAlert({ message: "Login successful!", type: "success" });
+
           setTimeout(() => {
-            navigate('/profile');
-          }
-          , 3000);
+            navigate("/profile");
+          }, 3000);
         }
       } catch (e) {
-        setAlert({ message: `Could not ${mode}. Please try again later.`, type: 'errors' });
+        setAlert({
+          message: `Could not ${mode}. Please try again later.`,
+          type: "errors",
+        });
       }
     },
-    [formState, mode, login, signup, navigate]
+    [formState, mode, login, signup, navigate],
   );
 
   useEffect(() => {
     if (isLoginSuccess) {
-      navigate('/profile');
+      navigate("/profile");
     }
 
     if (LoginErrors) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        general: 'Invalid Credentials',
+        general: "Invalid Credentials",
       }));
     }
 
     if (registerData) {
-      navigate('/signin');
+      navigate("/signin");
     }
   }, [isLoginSuccess, navigate, LoginErrors, registerData]);
 
-  const content = mode === 'register' ? registerContent : signinContent;
-
+  const content = mode === "register" ? registerContent : signinContent;
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
-      
       <h2 className="text-2xl font-semibold mb-4 text-center">
         {content.header}
       </h2>
       {alert.message && <Alert message={alert.message} type={alert.type} />}
       <p className="text-gray-600 mb-4 text-center">{content.subheader}</p>
       <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-        {mode === 'register' && (
+        {mode === "register" && (
           <>
             <div className="grid grid-cols-2 gap-4">
               <div className="mb-4">
@@ -197,11 +191,9 @@ useEffect(() => {
                     }))
                   }
                 />
-                {
-                  errors.firstName && (
-                    <p className="text-red-500 mt-2">{errors.firstName}</p>
-                  )
-                }
+                {errors.firstName && (
+                  <p className="text-red-500 mt-2">{errors.firstName}</p>
+                )}
               </div>
 
               <div className="mb-4">
@@ -264,10 +256,10 @@ useEffect(() => {
           <label className="block text-gray-700">Password</label>
           <div className="relative">
             <input
-              type={formState.passwordVisible ? 'text' : 'password'}
+              type={formState.passwordVisible ? "text" : "password"}
               className="mt-1 p-2 w-full border rounded"
               value={formState.password}
-              autoComplete='off'
+              autoComplete="off"
               onChange={(e) =>
                 setFormState((prevState) => ({
                   ...prevState,
@@ -297,16 +289,16 @@ useEffect(() => {
           )}
         </div>
 
-        {mode === 'register' && (
+        {mode === "register" && (
           <div>
             <div className="mb-4">
               <label className="block text-gray-700">Confirm Password</label>
               <div className="relative">
                 <input
-                  type={formState.passwordVisible ? 'text' : 'password'}
+                  type={formState.passwordVisible ? "text" : "password"}
                   className="mt-1 p-2 w-full border rounded"
                   value={formState.confirmPassword}
-                  autoComplete='off'
+                  autoComplete="off"
                   onChange={(e) =>
                     setFormState((prevState) => ({
                       ...prevState,
@@ -354,8 +346,10 @@ useEffect(() => {
           {content.buttonText}
         </button>
       </form>
-      {errors.general && <p className="text-red-500 mt-2 text-center">{errors.general}</p>}
-      {mode === 'signin' && (
+      {errors.general && (
+        <p className="text-red-500 mt-2 text-center">{errors.general}</p>
+      )}
+      {mode === "signin" && (
         <div className="flex justify-end">
           <Link
             to="/reset-password"
@@ -370,31 +364,36 @@ useEffect(() => {
         <span className="px-3 text-gray-500">Or</span>
         <div className="border-t border-gray-300 w-full"></div>
       </div>
-      <h1 className='mt-5'>Continue With</h1>
+      <h1 className="mt-5">Continue With</h1>
 
       <div className="grid grid-cols-2 gap-8 mt-2">
-        <button className="flex hover:border items-center border-gray-300 rounded" onClick={() => {}}>
+        <button
+          className="flex hover:border items-center border-gray-300 rounded"
+          onClick={() => {}}
+        >
           <FcGoogle className="mr-2" />
           Google
         </button>
-        <button className="flex items-center hover:border border-gray-300 rounded" onClick={() => {}}>
+        <button
+          className="flex items-center hover:border border-gray-300 rounded"
+          onClick={() => {}}
+        >
           <FaFacebook className="mr-2 ml-3" />
           Facebook
         </button>
       </div>
       <p className="mt-4 text-gray-700 text-center">
-        {content.linkText}{' '}
+        {content.linkText}{" "}
         <Link to={content.linkUrl} className="text-blue-500 hover:underline">
           {content.redirect}
         </Link>
       </p>
     </div>
-  )
-}
+  );
+};
 
-export default AuthForm
+export default AuthForm;
 
 AuthForm.propTypes = {
   mode: PropTypes.string.isRequired,
-  
 };
